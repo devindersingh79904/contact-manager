@@ -22,7 +22,7 @@ export default (state, action) => {
     case ADD_CONTACT:
       return {
         ...state,
-        contacts: [...state.contacts, action.payload],
+        contacts: [action.payload, ...state.contacts],
         loading: false,
       };
     case DELETE_CONTACT:
@@ -37,6 +37,9 @@ export default (state, action) => {
       return {
         ...state,
         contacts: null,
+        current: null,
+        filtered: null,
+        error: null,
       };
     case SET_CURRENT:
       return {
@@ -47,10 +50,7 @@ export default (state, action) => {
     case CLEAR_CURRENT:
       return {
         ...state,
-        contacts: null,
         current: null,
-        filtered: null,
-        error: null,
       };
 
     case UPDATE_CONTACT:

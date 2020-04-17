@@ -15,7 +15,6 @@ const Contacts = () => {
   if (contacts !== null && !loading && contacts.length === 0) {
     return <h4>No Contacts</h4>;
   }
-
   return (
     <Fragment>
       {contacts !== null && !loading ? (

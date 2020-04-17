@@ -14,6 +14,7 @@ import {
   CONTACT_ERROR,
   CLEAR_CONTACTS,
 } from '../types';
+import { compareSync } from 'bcryptjs';
 
 const ContactState = (props) => {
   const initialState = {
@@ -62,11 +63,19 @@ const ContactState = (props) => {
   };
 
   //delete contact
-  const deleteContact = (id) => {
-    dispatch({
-      type: DELETE_CONTACT,
-      payload: id,
-    });
+  const deleteContact = async (id) => {
+    try {
+      await axios.delete(`/api/contacts/${id}`);
+      dispatch({
+        type: DELETE_CONTACT,
+        payload: id,
+      });
+    } catch (err) {
+      dispatch({
+        type: CONTACT_ERROR,
+        payload: err.response.msg,
+      });
+    }
   };
 
   //clear contacts
@@ -92,11 +101,28 @@ const ContactState = (props) => {
   };
   // Update Contact
 
-  const updateContact = (contact) => {
-    dispatch({
-      type: UPDATE_CONTACT,
-      payload: contact,
-    });
+  const updateContact = async (contact) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.put(
+        `/api/contacts/${contact._id}`,
+        contact,
+        config
+      );
+      dispatch({
+        type: UPDATE_CONTACT,
+        payload: contact,
+      });
+    } catch (err) {
+      dispatch({
+        type: CONTACT_ERROR,
+        payload: err.response.msg,
+      });
+    }
   };
 
   const filterContacts = (text) => {
@@ -117,6 +143,7 @@ const ContactState = (props) => {
         current: state.current,
         filtered: state.filtered,
         error: state.error,
+        loading: state.loading,
         getContact,
         addContact,
         deleteContact,
